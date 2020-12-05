@@ -1,15 +1,14 @@
 const fetch = require('node-fetch');
 const qs = require('qs');
 
-const usersUrl = 'https://api.twitter.com/2/users/by';
+const URL = 'https://api.twitter.com/1.1/friends/list.json';
+const PMARCA_ID = 5943622;
 
 exports.handler = async event => {
     const params = {
-        usernames: 'pmarca,jack,miklos_me',
-        'user.fields': 'created_at,description',
+        user_id: PMARCA_ID,
     };
-    const url = `${usersUrl}?${qs.stringify(params)}`;
-    const res = await fetch(url, {
+    const res = await fetch(`${URL}?${qs.stringify(params)}`, {
         method: 'GET',
         headers: {
             authorization: `Bearer ${process.env.TWITTER_TOKEN}`,
@@ -18,7 +17,7 @@ exports.handler = async event => {
 
     const data = await res.json();
 
-    console.log(data);
+    console.log(data.users.map(u => u.name));
 
     return {
         statusCode: 200,
