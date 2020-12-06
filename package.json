@@ -22,9 +22,8 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.76.0",
+    "cdk-dynamo-table-viewer": "^3.1.2",
     "dotenv": "^8.2.0",
-    "node-fetch": "^2.6.1",
-    "qs": "^6.9.4",
     "source-map-support": "^0.5.16"
   }
 }
