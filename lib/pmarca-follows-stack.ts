@@ -35,6 +35,9 @@ export class PmarcaFollowsStack extends cdk.Stack {
             runtime: lambda.Runtime.NODEJS_12_X,
             code: lambda.Code.fromAsset('lambda'),
             handler: 'new-follow.handler',
+            environment: {
+                TWITTER_TOKEN: process.env.TWITTER_TOKEN as string,
+            },
         });
 
         followsTable.grantStreamRead(newFollow);

@@ -50,6 +50,11 @@ exports.handler = async event => {
         })
         .promise();
 
+    console.log(
+        'Last follow ids:',
+        data.users.map(u => u.id),
+    );
+
     return {
         statusCode: 200,
         headers: { 'Content-Type': 'text/plain' },

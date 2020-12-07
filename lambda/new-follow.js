@@ -12,6 +12,7 @@ exports.handler = async (event, context) => {
 
     const params = {
         user_id: item.dynamodb['Keys']['id']['N'],
+        count: 40,
     };
 
     const data = await new Promise((resolve, reject) => {
@@ -38,11 +39,11 @@ exports.handler = async (event, context) => {
         });
     });
 
-    const tweets = data.filter(t => !t.text.startsWith('RT '));
-    const topLikeCount = Math.max(...tweets.map(t => t.favorite_count));
-    const topTweet = tweets.find(t => t.favorite_count === topLikeCount);
-
-    console.log('topTweet: \n' + JSON.stringify(topTweet, null, 2));
+        const tweets = data.filter(t => !t.text.startsWith('RT '));
+        const topLikeCount = Math.max(...tweets.map(t => t.favorite_count));
+        const topTweet = tweets.find(t => t.favorite_count === topLikeCount);
+        
+        console.log('topTweet: \n' + JSON.stringify(topTweet, null, 2));
 
     // console.log('EVENT: \n' + JSON.stringify(event, null, 2));
     return context.logStreamName;
