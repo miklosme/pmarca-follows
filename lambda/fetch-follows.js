@@ -10,29 +10,34 @@ exports.handler = async event => {
         user_id: PMARCA_ID,
     };
 
-    const data = await new Promise((resolve, reject) => {
-        let dataString = '';
-        const req = https.get(
-            `${URL}?${qs.stringify(params)}`,
-            {
-                headers: {
-                    authorization: `Bearer ${process.env.TWITTER_TOKEN}`,
-                },
-            },
-            res => {
-                res.on('data', chunk => {
-                    dataString += chunk;
-                });
-                res.on('end', () => {
-                    resolve(JSON.parse(dataString));
-                });
-            },
-        );
+    // const data = await new Promise((resolve, reject) => {
+    //     let dataString = '';
+    //     const req = https.get(
+    //         `${URL}?${qs.stringify(params)}`,
+    //         {
+    //             headers: {
+    //                 authorization: `Bearer ${process.env.TWITTER_TOKEN}`,
+    //             },
+    //         },
+    //         res => {
+    //             res.on('data', chunk => {
+    //                 dataString += chunk;
+    //             });
+    //             res.on('end', () => {
+    //                 resolve(JSON.parse(dataString));
+    //             });
+    //         },
+    //     );
 
-        req.on('error', e => {
-            reject(e);
-        });
-    });
+    //     req.on('error', e => {
+    //         reject(e);
+    //     });
+    // });
+
+    const data = {
+        // miklos_me
+        users: [{ id: 2877271954 }],
+    };
 
     const dynamo = new DynamoDB();
 

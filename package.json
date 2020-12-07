@@ -21,8 +21,10 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/core": "1.76.0",
-    "cdk-dynamo-table-viewer": "^3.1.2",
+    "@aws-cdk/aws-apigateway": "^1.77.0",
+    "@aws-cdk/aws-dynamodb": "^1.77.0",
+    "@aws-cdk/aws-lambda": "^1.77.0",
+    "@aws-cdk/core": "^1.77.0",
     "dotenv": "^8.2.0",
     "source-map-support": "^0.5.16"
   }
