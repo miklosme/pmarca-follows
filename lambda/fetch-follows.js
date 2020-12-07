@@ -52,13 +52,12 @@ exports.handler = async event => {
     const knownIdsSet = new Set(lastFollowsQuery['Responses'][TABLE].map(x => String(x['id']['N'])));
     const newFollowsIdsSet = new Set(lastFollows.filter(id => !knownIdsSet.has(id)));
 
-    const datetime = new Date().getTime().toString();
-
     const newUsers = data.users
         .filter(user => newFollowsIdsSet.has(String(user.id)))
         .map(user => ({ id: user.id, name: user.name }));
 
     if (newUsers.length) {
+        const datetime = new Date().getTime().toString();
         await dynamo
             .batchWriteItem({
                 RequestItems: {
