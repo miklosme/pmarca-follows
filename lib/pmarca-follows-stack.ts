@@ -12,6 +12,7 @@ export class PmarcaFollowsStack extends cdk.Stack {
 
         const followsTable = new dynamodb.Table(this, 'Follows', {
             partitionKey: { name: 'id', type: dynamodb.AttributeType.NUMBER },
+            stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
         });
 
         const fetchFollows = new lambda.Function(this, 'FetchFollows', {
@@ -28,6 +29,21 @@ export class PmarcaFollowsStack extends cdk.Stack {
 
         new apigw.LambdaRestApi(this, 'Endpoint', {
             handler: fetchFollows,
+        });
+
+        const newFollow = new lambda.Function(this, 'NewFollow', {
+            runtime: lambda.Runtime.NODEJS_12_X,
+            code: lambda.Code.fromAsset('lambda'),
+            handler: 'new-follow.handler',
+        });
+
+        followsTable.grantStreamRead(newFollow);
+
+        newFollow.addEventSourceMapping('EventSourceMapping', {
+            eventSourceArn: followsTable.tableStreamArn as string,
+            enabled: true,
+            startingPosition: lambda.StartingPosition.LATEST,
+            batchSize: 1,
         });
 
         new TableViewer(this, 'ViewFollowers', {
