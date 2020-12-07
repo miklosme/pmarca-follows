@@ -12,7 +12,7 @@ export class PmarcaFollowsStack extends cdk.Stack {
 
         const followsTable = new dynamodb.Table(this, 'Follows', {
             partitionKey: { name: 'id', type: dynamodb.AttributeType.NUMBER },
-            stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
+            stream: dynamodb.StreamViewType.NEW_IMAGE,
         });
 
         const fetchFollows = new lambda.Function(this, 'FetchFollows', {
