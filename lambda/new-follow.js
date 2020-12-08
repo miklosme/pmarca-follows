@@ -1,5 +1,6 @@
 const https = require('https');
 const qs = require('querystring');
+const request = require('request-promise');
 
 const URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 
@@ -50,28 +51,17 @@ exports.handler = async (event, context) => {
 
     console.log('topTweet: \n' + JSON.stringify(topTweet, null, 2));
 
-    await new Promise((resolve, reject) => {
-        const url = `https://api.twitter.com/1.1/statuses/retweet/${topTweet.id}.json`;
-        const req = https.request(
-            url,
-            {
-                method: 'POST',
-                headers: {
-                    authorization: `Bearer ${process.env.TWITTER_TOKEN}`,
-                },
-            },
-            res => {
-                console.log('Retweet resolved with code:', res.statusCode);
-                resolve();
-            },
-        );
-
-        req.on('error', e => {
-            reject(e);
-        });
+    const res = await request.post({
+        url: `https://api.twitter.com/1.1/statuses/retweet/${topTweet.id_str}.json`,
+        oauth: {
+            consumer_key: process.env.TWITTER_CONSUMER_KEY,
+            consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+            token: process.env.TWITTER_ACCESS_TOKEN,
+            token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+        },
     });
 
-    console.log('Retweet was successful.');
+    console.log('Retweet was successful, response:', res);
 
     // console.log('EVENT: \n' + JSON.stringify(event, null, 2));
     return context.logStreamName;
