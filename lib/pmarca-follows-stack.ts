@@ -16,7 +16,7 @@ export class PmarcaFollowsStack extends cdk.Stack {
         });
 
         const followsTable = new dynamodb.Table(this, 'Follows', {
-            partitionKey: { name: 'id', type: dynamodb.AttributeType.NUMBER },
+            partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
             stream: dynamodb.StreamViewType.NEW_IMAGE,
         });
 
@@ -25,9 +25,13 @@ export class PmarcaFollowsStack extends cdk.Stack {
             code: lambda.Code.fromBucket(lambdaAsset.bucket, lambdaAsset.s3ObjectKey),
             handler: 'fetch-follows.handler',
             timeout: cdk.Duration.seconds(10),
+            retryAttempts: 0,
             environment: {
-                TWITTER_TOKEN: process.env.TWITTER_TOKEN as string,
                 FOLLOWS_TABLE_NAME: followsTable.tableName,
+                TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY as string,
+                TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET as string,
+                TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN as string,
+                TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET as string,
             },
         });
 
@@ -42,8 +46,8 @@ export class PmarcaFollowsStack extends cdk.Stack {
             code: lambda.Code.fromAsset('lambda'),
             handler: 'new-follow.handler',
             timeout: cdk.Duration.seconds(10),
+            retryAttempts: 0,
             environment: {
-                TWITTER_TOKEN: process.env.TWITTER_TOKEN as string,
                 TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY as string,
                 TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET as string,
                 TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN as string,

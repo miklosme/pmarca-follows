@@ -1,43 +1,17 @@
 const { DynamoDB } = require('aws-sdk');
-const https = require('https');
-const qs = require('querystring');
+const twitter = require('./twitter');
 
-const URL = 'https://api.twitter.com/1.1/friends/list.json';
 const PMARCA_ID = 5943622;
 
-exports.handler = async event => {
-    const params = {
-        user_id: PMARCA_ID,
-    };
+exports.handler = async () => {
+    const data = await twitter({
+        url: 'https://api.twitter.com/1.1/friends/list.json',
+        qs: {
+            user_id: PMARCA_ID,
+        },
+    });
 
-    // const data = await new Promise((resolve, reject) => {
-    //     let dataString = '';
-    //     const req = https.get(
-    //         `${URL}?${qs.stringify(params)}`,
-    //         {
-    //             headers: {
-    //                 authorization: `Bearer ${process.env.TWITTER_TOKEN}`,
-    //             },
-    //         },
-    //         res => {
-    //             res.on('data', chunk => {
-    //                 dataString += chunk;
-    //             });
-    //             res.on('end', () => {
-    //                 resolve(JSON.parse(dataString));
-    //             });
-    //         },
-    //     );
-
-    //     req.on('error', e => {
-    //         reject(e);
-    //     });
-    // });
-
-    const data = {
-        // miklos_me
-        users: [{ id: 2877271954 }],
-    };
+    console.log('friend data:', data)
 
     const dynamo = new DynamoDB();
 
@@ -47,7 +21,7 @@ exports.handler = async event => {
                 [process.env.FOLLOWS_TABLE_NAME]: data.users.map(user => ({
                     PutRequest: {
                         Item: {
-                            id: { N: String(user.id) },
+                            id: { S: user.id_str },
                         },
                     },
                 })),
@@ -63,6 +37,6 @@ exports.handler = async event => {
     return {
         statusCode: 200,
         headers: { 'Content-Type': 'text/plain' },
-        body: `Fetched followers successfully.`,
+        body: `Successfully fetched followers.`,
     };
 };
