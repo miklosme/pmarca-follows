@@ -1,7 +1,9 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
-import * as apigw from '@aws-cdk/aws-apigateway';
+// import * as apigw from '@aws-cdk/aws-apigateway';
+import * as events from '@aws-cdk/aws-events';
+import * as targets from '@aws-cdk/aws-events-targets';
 import * as assets from '@aws-cdk/aws-s3-assets';
 import * as path from 'path';
 
@@ -24,8 +26,6 @@ export class PmarcaFollowsStack extends cdk.Stack {
             runtime: lambda.Runtime.NODEJS_12_X,
             code: lambda.Code.fromBucket(lambdaAsset.bucket, lambdaAsset.s3ObjectKey),
             handler: 'fetch-follows.handler',
-            timeout: cdk.Duration.seconds(10),
-            retryAttempts: 0,
             environment: {
                 FOLLOWS_TABLE_NAME: followsTable.tableName,
                 TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY as string,
@@ -37,16 +37,21 @@ export class PmarcaFollowsStack extends cdk.Stack {
 
         followsTable.grantReadWriteData(fetchFollows);
 
-        new apigw.LambdaRestApi(this, 'Endpoint', {
-            handler: fetchFollows,
+        // for debugging
+        // new apigw.LambdaRestApi(this, 'Endpoint', {
+        //     handler: fetchFollows,
+        // });
+
+        const rule = new events.Rule(this, 'ScheduleRule', {
+            schedule: events.Schedule.expression('rate(15 minutes)'),
         });
+
+        rule.addTarget(new targets.LambdaFunction(fetchFollows));
 
         const newFollow = new lambda.Function(this, 'NewFollow', {
             runtime: lambda.Runtime.NODEJS_12_X,
             code: lambda.Code.fromAsset('lambda'),
             handler: 'new-follow.handler',
-            timeout: cdk.Duration.seconds(10),
-            retryAttempts: 0,
             environment: {
                 TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY as string,
                 TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET as string,

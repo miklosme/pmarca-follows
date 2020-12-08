@@ -1,5 +1,9 @@
 # Pmarca Follows
 
+Notes:
+- When setting up, `cp .env-example .env` and fill it with credentials
+- Don't forget to NPM install in `lambda/`
+
 ## Useful commands
 
  * `npm run build`   compile typescript to js

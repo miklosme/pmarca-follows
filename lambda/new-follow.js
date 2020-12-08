@@ -1,13 +1,12 @@
 const twitter = require('./twitter');
 
 exports.handler = async event => {
+    // batch size is 1
     const item = event['Records'][0];
 
     if (item.eventName !== 'INSERT') {
         return;
     }
-
-    console.log("event['Records'][0]", event['Records'][0])
 
     const data = await twitter({
         url: 'https://api.twitter.com/1.1/statuses/user_timeline.json',
@@ -28,10 +27,10 @@ exports.handler = async event => {
 
     console.log('topTweet: \n' + JSON.stringify(topTweet, null, 2));
 
-    const res = await twitter({
+    await twitter({
         method: 'POST',
         url: `https://api.twitter.com/1.1/statuses/retweet/${topTweet.id_str}.json`,
     });
 
-    console.log('Retweet was successful, response:', res);
+    console.log('Retweet was successful.');
 };

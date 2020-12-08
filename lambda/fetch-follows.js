@@ -11,7 +11,7 @@ exports.handler = async () => {
         },
     });
 
-    console.log('friend data:', data)
+    console.log('friend data:', data);
 
     const dynamo = new DynamoDB();
 
@@ -33,10 +33,4 @@ exports.handler = async () => {
         'Last follow ids:',
         data.users.map(u => u.id),
     );
-
-    return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'text/plain' },
-        body: `Successfully fetched followers.`,
-    };
 };

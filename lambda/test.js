@@ -11,4 +11,6 @@ const PMARCA_ID = 5943622;
             count: 40,
         },
     });
+
+    console.log(data);
 })();
