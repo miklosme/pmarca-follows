@@ -16,9 +16,12 @@ exports.handler = async event => {
         },
     });
 
-    const tweets = data.filter(t => !t.text.startsWith('RT '));
-    const topLikeCount = Math.max(...tweets.map(t => t.favorite_count));
-    const topTweet = tweets.find(t => t.favorite_count === topLikeCount);
+    const SEVEN_DAYS_AGO = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const tweets = data
+        .filter(tweet => !tweet.text.startsWith('RT '))
+        .filter(tweet => new Date(tweet.created_at).getTime() > SEVEN_DAYS_AGO);
+    const topLikeCount = Math.max(...tweets.map(tweet => tweet.favorite_count));
+    const topTweet = tweets.find(tweet => tweet.favorite_count === topLikeCount);
 
     if (!topTweet) {
         console.log('There were no top tweet.');

@@ -7,7 +7,7 @@ const PMARCA_ID = 5943622;
     const data = await twitter({
         url: 'https://api.twitter.com/1.1/statuses/user_timeline.json',
         qs: {
-            user_id: item.dynamodb['Keys']['id']['S'],
+            user_id: PMARCA_ID,
             count: 40,
         },
     });
