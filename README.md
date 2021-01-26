@@ -1,10 +1,14 @@
 # Pmarca Follows
 
-Notes:
+Twitter bot running on AWS CDK. When [@pmarca](https://twitter.com/pmarca) follows somebody, the bot retweets a recent popular tweet from them.
+
+Account: https://twitter.com/pmarca_follows
+
+## Setup
 - When setting up, `cp .env-example .env` and fill it with credentials
 - Don't forget to NPM install in `lambda/`
 
-## Useful commands
+Rest is common CDK stuff:
 
  * `npm run build`   compile typescript to js
  * `npm run watch`   watch for changes and compile
